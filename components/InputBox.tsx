@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -31,21 +30,16 @@ const modelList = [
   "code-davinci-002",
   "text-embedding-ada-002",
   "davinci",
- 
 ];
 export default function InputBox({
   onSubmit,
 }: {
   onSubmit: (model: TiktokenModel, input: string) => Promise<void>;
 }) {
-  const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("Hello World");
   const [model, setModel] = useState<TiktokenModel>("gpt-4");
   const handleClick = () => {
-    onSubmit(model, input)
-      .then(() => setLoading(true))
-      .finally(() => setLoading(false));
-    // setLoading(false);
+    onSubmit(model, input);
   };
 
   return (
@@ -83,12 +77,8 @@ export default function InputBox({
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
-        <Button
-          style={{ margin: " 10px 0px" }}
-          onClick={handleClick}
-          disabled={loading}
-        >
-          {loading ? "Processing..." : "Submit"}
+        <Button style={{ margin: " 10px 0px" }} onClick={handleClick}>
+          Submit
         </Button>
       </CardContent>
     </Card>
