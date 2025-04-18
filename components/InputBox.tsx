@@ -31,29 +31,37 @@ const modelList = [
   "code-davinci-002",
   "text-embedding-ada-002",
   "davinci",
-  "curie",
-  "babbage",
-  "ada",
+ 
 ];
 export default function InputBox({
   onSubmit,
 }: {
-  onSubmit: (model: TiktokenModel, input: string) => void;
+  onSubmit: (model: TiktokenModel, input: string) => Promise<void>;
 }) {
-  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [input, setInput] = useState("Hello World");
   const [model, setModel] = useState<TiktokenModel>("gpt-4");
   const handleClick = () => {
-    onSubmit(model, input);
+    onSubmit(model, input)
+      .then(() => setLoading(true))
+      .finally(() => setLoading(false));
+    // setLoading(false);
   };
 
   return (
-    <Card style={{ width: "50%", margin: "0 auto",height:"400px" }}>
+    <Card style={{ width: "50%", margin: "0 auto", height: "400px" }}>
       <CardHeader>
         <CardTitle>Input</CardTitle>
         <CardDescription>String Provided by User</CardDescription>
       </CardHeader>
       <CardContent>
-        <Select  onValueChange={(value) => setModel(value as TiktokenModel)} >
+        <Select
+          onValueChange={(value) => {
+            const newModel = value as TiktokenModel;
+            setModel(newModel);
+            onSubmit(newModel, input); // auto-submit when model changes
+          }}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Models" />
           </SelectTrigger>
@@ -69,14 +77,20 @@ export default function InputBox({
             </SelectGroup>
           </SelectContent>
         </Select>
-        <Textarea style={{ height: "200px" }} 
+        <Textarea
+          style={{ height: "200px" }}
           placeholder="Write your Prompt here"
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
-        <Button style={{margin:" 10px 0px"}} onClick={handleClick}>Submit</Button>
+        <Button
+          style={{ margin: " 10px 0px" }}
+          onClick={handleClick}
+          disabled={loading}
+        >
+          {loading ? "Processing..." : "Submit"}
+        </Button>
       </CardContent>
-     
     </Card>
   );
 }

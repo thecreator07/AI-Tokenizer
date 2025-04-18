@@ -1,3 +1,5 @@
+import NavigateButton from "@/components/NavigateButton";
+
 export default function Home() {
   return (
     <>
@@ -9,6 +11,7 @@ export default function Home() {
           <p className="mt-3 md:mt-4 text-base md:text-lg">
           Where you can understand the tokenization process of your text in real-time
           </p>
+          <NavigateButton/>
         </section>
       </main>
     </>

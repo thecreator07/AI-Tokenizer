@@ -20,7 +20,7 @@ export default function OutputBox(tokens: {
         <CardDescription>Length:{tokens.length}</CardDescription>
       </CardHeader>
       <CardContent style={{  }}>
-        <p>
+        <div>
           {tokens.length > 0 && tokens.tokens.length > 0 ? (
             <div className="overflow-y-auto h-full">
               {Array.from(tokens.tokens).map((token, index) => (
@@ -33,7 +33,7 @@ export default function OutputBox(tokens: {
           ) : (
             <p>No tokens generated yet.</p>
           )}
-        </p>
+        </div>
       </CardContent>
      
     </Card>
