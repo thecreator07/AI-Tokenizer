@@ -1,41 +1,35 @@
+
 "use client";
-import React from "react";
 import {
   Card,
   CardContent,
   CardDescription,
- 
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 
-export default function OutputBox(tokens: {
-  length: number;
-  tokens: Uint32Array;
-}) {
+export default function OutputBox({ tokens }: { tokens: number[] }) {
   return (
-    <Card style={{ width: "50%", margin: "0 auto", height: "400px" }}>
+    <Card className="flex-1 h-[450px] flex flex-col">
       <CardHeader>
         <CardTitle>Tokens</CardTitle>
-        <CardDescription>Length:{tokens.length}</CardDescription>
+        <CardDescription>Length: {tokens.length}</CardDescription>
       </CardHeader>
-      <CardContent style={{  }}>
-        <div>
-          {tokens.length > 0 && tokens.tokens.length > 0 ? (
-            <div className="overflow-y-auto h-full">
-              {Array.from(tokens.tokens).map((token, index) => (
-                <span key={index} className="text-sm font-mono">
-                  {token}
-                  {index !== tokens.tokens.length - 1 ? ", " : ""}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <p>No tokens generated yet.</p>
-          )}
+      <CardContent className="flex-1 overflow-auto">
+        <div className="flex flex-wrap gap-1">
+          {tokens.map((token, index) => (
+            <span 
+              key={index}
+              className="px-2 py-1 bg-gray-100 rounded text-sm font-mono"
+            >
+              {token}
+            </span>
+          ))}
         </div>
+        {tokens.length === 0 && (
+          <p className="text-gray-500">No tokens generated yet.</p>
+        )}
       </CardContent>
-     
     </Card>
   );
 }

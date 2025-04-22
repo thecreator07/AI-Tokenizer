@@ -16,12 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { TiktokenModel } from "tiktoken";
-const modelList = [
-  "gpt-4o",
+
+// Align with server-side valid models
+const modelList: TiktokenModel[] = [
   "gpt-4",
   "gpt-4-32k",
   "gpt-3.5-turbo",
@@ -29,8 +29,8 @@ const modelList = [
   "text-davinci-003",
   "code-davinci-002",
   "text-embedding-ada-002",
-  "davinci",
 ];
+
 export default function InputBox({
   onSubmit,
 }: {
@@ -38,31 +38,37 @@ export default function InputBox({
 }) {
   const [input, setInput] = useState("Hello World");
   const [model, setModel] = useState<TiktokenModel>("gpt-4");
-  const handleClick = () => {
-    onSubmit(model, input);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    try {
+      await onSubmit(model, input);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <Card style={{ width: "50%", margin: "0 auto", height: "400px" }}>
+    <Card className="w-full md:w-1/2 mx-auto h-[450px] flex flex-col">
       <CardHeader>
         <CardTitle>Input</CardTitle>
         <CardDescription>String Provided by User</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-col gap-4 flex-1">
         <Select
+          value={model}
           onValueChange={(value) => {
             const newModel = value as TiktokenModel;
             setModel(newModel);
-            onSubmit(newModel, input); // auto-submit when model changes
           }}
         >
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Models" />
+            <SelectValue placeholder="Select model" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectLabel>MODELS</SelectLabel>
-
               {modelList.map((model) => (
                 <SelectItem key={model} value={model}>
                   {model}
@@ -71,14 +77,20 @@ export default function InputBox({
             </SelectGroup>
           </SelectContent>
         </Select>
+
         <Textarea
-          style={{ height: "200px" }}
-          placeholder="Write your Prompt here"
+          className="flex-1 min-h-[200px]"
+          placeholder="Enter your text here"
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
-        <Button style={{ margin: " 10px 0px" }} onClick={handleClick}>
-          Submit
+
+        <Button 
+          onClick={handleSubmit}
+          disabled={isLoading}
+          className="mt-4"
+        >
+          {isLoading ? "Processing..." : "Tokenize"}
         </Button>
       </CardContent>
     </Card>

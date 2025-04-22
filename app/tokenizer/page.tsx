@@ -1,42 +1,45 @@
 "use client";
-import { TiktokenModel } from "tiktoken";
 import { useState } from "react";
 import InputBox from "@/components/InputBox";
 import OutputBox from "@/components/OutputBox";
 
 export default function Home() {
-  const [tokens, setTokens] = useState<Uint32Array>(new Uint32Array());
+  const [tokens, setTokens] = useState<number[]>([]);
+  const [error, setError] = useState<string>("");
 
-  const handleInputSubmit = async (model: TiktokenModel, newInput: string) => {
+  const handleInputSubmit = async (model: string, newInput: string) => {
     try {
+      setError("");
       const res = await fetch("/api/tokenize", {
         method: "POST",
-        body: JSON.stringify({ text: newInput, model }),
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: newInput, model }),
       });
 
+      const data = await res.json();
+      
       if (!res.ok) {
-        const errorText = await res.text();
-        console.error("Server Error:", errorText);
+        setError(data.error || "Unknown error occurred");
         return;
       }
 
-      const data = await res.json();
-      setTokens(new Uint32Array(data.tokens));
+      setTokens(data.tokens);
     } catch (error) {
-      console.error("Unexpected error:", error);
+      console.error("Fetch error:", error);
+      setError("Failed to connect to the server");
     }
   };
 
   return (
-    <div>
-      <div className="text-center">
-        <h1 className="text-2xl font-bold">Tokenizer</h1>
+    <div className="container mx-auto p-4">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold">Tokenizer</h1>
+        {error && <p className="text-red-500 mt-2">{error}</p>}
       </div>
 
-      <div className="flex sm:flex-row flex-col items-center justify-center gap-5 p-5 ">
+      <div className="flex flex-col md:flex-row gap-6">
         <InputBox onSubmit={handleInputSubmit} />
-        <OutputBox length={tokens.length} tokens={tokens} />
+        <OutputBox tokens={tokens} />
       </div>
     </div>
   );
