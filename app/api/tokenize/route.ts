@@ -1,3 +1,6 @@
+'use server'
+
+
 // /app/api/tokenize/route.ts
 // import { NextResponse } from "next/server";
 import { NextRequest, NextResponse } from "next/server";
