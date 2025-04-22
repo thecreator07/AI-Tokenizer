@@ -14,9 +14,7 @@ export default function Home() {
       body: JSON.stringify({ text: newInput, model }),
       headers: { "Content-Type": "application/json" },
     });
-    console.log(res)
     const data = await res.json();
-    console.log(data)
     setTokens(data.tokens);
   };
   
