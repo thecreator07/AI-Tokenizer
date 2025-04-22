@@ -8,14 +8,24 @@ export default function Home() {
   const [tokens, setTokens] = useState<Uint32Array>(new Uint32Array());
 
   const handleInputSubmit = async (model: TiktokenModel, newInput: string) => {
-    const res = await fetch("/api/tokenize", {
-      method: "POST",
-      body: JSON.stringify({ text: newInput, model }),
-      headers: { "Content-Type": "application/json" },
-    });
-    const data = await res.json();
-    console.log(data.tokens)
-    setTokens(new Uint32Array(data.tokens));
+    try {
+      const res = await fetch("/api/tokenize", {
+        method: "POST",
+        body: JSON.stringify({ text: newInput, model }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("Server Error:", errorText);
+        return;
+      }
+
+      const data = await res.json();
+      setTokens(new Uint32Array(data.tokens));
+    } catch (error) {
+      console.error("Unexpected error:", error);
+    }
   };
 
   return (
