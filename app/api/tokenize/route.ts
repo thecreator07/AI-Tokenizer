@@ -4,6 +4,7 @@ import { encoding_for_model } from "tiktoken";
 
 export async function POST(req: Request) {
   const { text, model } = await req.json();
+  console.log(text,model)
   const encoding = encoding_for_model(model || "gpt-4");
   const tokens = encoding.encode(text);
 
