@@ -1,6 +1,6 @@
 
 import { NextResponse } from "next/server";
-import { encoding_for_model } from "tiktoken";
+import { encoding_for_model, TiktokenModel } from "tiktoken";
 
 export async function POST(req: Request) {
   try {
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const encoder = encoding_for_model(model as any);
+    const encoder = encoding_for_model(model as TiktokenModel);
     const tokens = encoder.encode(text);
     encoder.free();
 
